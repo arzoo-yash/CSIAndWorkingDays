@@ -1,0 +1,196 @@
+.csiAndWorkingDays {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: #f4f6fb;
+  padding: 32px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .csiAndWorkingDays {
+    padding: 20px 16px;
+  }
+}
+
+ :global {
+  #O365_NavHeader, .commandBarWrapper, #SuiteNavPlaceHolder {
+    display: none !important;
+  }
+  #workbenchPageContent {
+    max-width: initial !important;
+    width: 100% !important;
+  }
+  #SuiteNavWrapper{
+    display:none !important;
+  }
+  .c_0RSS5_Wr9CO{
+    display: none !important;
+  }
+  .CanvasZone {
+    max-width: none !important;
+    padding: 0px 0px !important;
+  }
+  .k_e_50a7110f{
+    max-width: none !important;
+    width:inherit !important;
+  }
+  .a_e_50a7110f{
+    padding: 0px !important;
+    margin: 0px !important;
+  }
+  .a_f_50a7110f:not(.b_f_50a7110f) .p_f_50a7110f.q_f_50a7110f {
+    box-sizing: border-box;
+    max-width: none !important;
+    padding: 0 !important;
+    width: inherit !important;
+  }
+  .a_b_50a7110f:not(.b_b_50a7110f) .g_b_50a7110f{
+    display: flex;
+    max-width: 100% !important;
+    margin-top: 4% !important;
+    width:inherit !important;
+  }
+  .spAppAndPropertyPanelContainer .sp-appBar{
+    display:none !important;
+  }
+
+  div[data-automation-id="fullWidthImageLayout"]{
+    display:none !important;
+  }
+  div[data-automation-id="CanvasZone"] > div:first-child {
+    max-width: 100% !important;
+    padding:0px !important;
+    width:100% !important;
+  }
+  div[data-automation-id="CanvasZone"]{
+    padding-right: 0px !important;
+    margin-left: 0px !important;
+  }
+  .CanvasZone:not(.CanvasZone--fullWidth) .ControlZone {
+    padding: 0px !important;
+  }
+  .CanvasSection--read .ControlZone:last-of-type {
+      margin-bottom: 0px !important;
+  }
+  .CanvasSection--read .ControlZone {
+      margin-top: 0px !important;
+  }
+  .CanvasSection-col {
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+  }
+  .webPartContainer{
+    display:none !important;
+  }
+  .qz_bx_k{
+    display:none !important;
+  }
+  div[class^='headerRow-']{
+    display:none !important;
+  }
+  div[id='spLeftNav']{
+    display:none !important;
+  }
+  div[class^='spNav_']{
+    display:none !important;
+  }
+  div[class^='gradientBox_']{
+    display:none !important;
+  }
+  div[class^='parallaxContainer_']{
+    display:none !important;
+  }
+  div[class^='commentsWrapper_']{
+    display:none !important;
+  }
+  div[class^='scrollRegion_']{
+    overflow: visible !important;
+  }
+  div[data-sp-feature-tag='Comments']{
+    display:none !important;
+  }
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  ::-webkit-scrollbar-thumb {
+      background-color: #c2c2c2;
+      border-radius: 10px;
+      border: 1px solid #aeaeae;
+  }
+  ::-webkit-scrollbar-track {
+      background: #fff;
+  }
+  /* Font and outline resets */
+  *{
+    font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+  }
+  *,*:focus,*:hover{
+    outline:none !important;
+  }
+
+  /* Override Fluent UI Dialog modal width */
+  .ms-Dialog-main {
+    max-width: 95vw !important;
+    // min-width: 900px !important; 
+    min-width: 350px!important;
+    
+  }
+
+  .ms-Dialog-content {
+    width: 100% !important;
+  }
+
+  /* Dialog Footer Styling */
+  .ms-Dialog-actions {
+    padding: 20px 0 24px !important;
+    margin: 0 !important;
+    border-top: 1px solid #edebe9 !important;
+    overflow-x: hidden !important;
+  }
+
+  .ms-Dialog-actionsRight {
+    margin-right: 12px !important;
+  }
+
+  /* Confirmation Modal Specific Styles */
+  .confirmationModal {
+    .ms-Dialog-main {
+      max-width: 400px !important;
+      min-width: 400px !important;
+      width: 400px !important;
+    }
+    
+    .ms-Dialog-inner {
+      overflow-x: hidden !important;
+      max-width: 350px !important;
+      // padding: 0 !important;
+    }
+    
+    .ms-Modal-scrollableContent {
+      overflow-x: hidden !important;
+      max-width: 400px !important;
+      width: 400px !important;
+    }
+
+    .ms-Dialog-content {
+      overflow-x: hidden !important;
+      max-width: 400px !important;
+      width: 400px !important;
+      padding: 20px 24px !important;
+      min-height: 60px !important;
+    }
+
+    .ms-Dialog-actions {
+      padding: 16px 0 20px !important;
+      overflow-x: hidden !important;
+    }
+
+    .ms-Dialog-actionsRight {
+      margin-right: 12px !important;
+    }
+  }
+}

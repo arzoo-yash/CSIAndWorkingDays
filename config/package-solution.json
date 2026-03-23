@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "csi-and-working-days-client-side-solution",
+    "id": "fe9749ce-ce2d-45b5-8e57-7ccc481b8e45",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.21.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "CSIAndWorkingDays description"
+      },
+      "longDescription": {
+        "default": "CSIAndWorkingDays description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "csi-and-working-days Feature",
+        "description": "The feature that activates elements of the csi-and-working-days solution.",
+        "id": "a808c0ad-1131-4272-b3bf-75703a79dfab",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/csi-and-working-days.sppkg"
+  }
+}

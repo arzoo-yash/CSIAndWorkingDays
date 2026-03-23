@@ -1,0 +1,157 @@
+.header {
+  background: linear-gradient(135deg, rgba(82, 95, 234, 0.15), rgba(173, 185, 255, 0.35));
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #1a237e;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  // background: rgba(255, 255, 255, 0.68);
+  box-shadow: inset 0 2px 4px rgba(26, 35, 126, 0.18);
+  font-size: 22px;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  color: var(--indigoDark, #303f9f);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: rgba(26, 35, 126, 0.78);
+  font-weight: 500;
+}
+
+.metaText {
+  font-size: 13px;
+  color: rgba(26, 35, 126, 0.8);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.tabRow {
+  display: flex;
+  gap: 24px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(26, 35, 126, 0.2);
+  flex-wrap: wrap;
+}
+
+.tabButton {
+  position: relative;
+  background: transparent;
+  border: none;
+  padding: 8px 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(26, 35, 126, 0.7);
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.tabButton:hover {
+  color: #1a237e;
+}
+
+.activeTab {
+  color: #1a237e;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 3px;
+  border-radius: 999px;
+  background: #1a237e;
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.primaryAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0d6efd;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 0;
+  border: none;
+  box-shadow: 0 10px 22px rgba(13, 110, 253, 0.28);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.primaryAction:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(13, 110, 253, 0.32);
+}
+
+.primaryActionIcon {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 8px;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metaText {
+    align-self: stretch;
+    text-align: center;
+  }
+
+  .actionRow {
+    justify-content: stretch;
+  }
+
+  .primaryAction {
+    width: 100%;
+    justify-content: center;
+  }
+}

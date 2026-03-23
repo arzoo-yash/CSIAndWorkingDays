@@ -1,0 +1,18 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.19.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "csi-and-working-days",
+    "libraryId": "fe9749ce-ce2d-45b5-8e57-7ccc481b8e45",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "CSIAndWorkingDays",
+    "solutionShortDescription": "CSIAndWorkingDays description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
