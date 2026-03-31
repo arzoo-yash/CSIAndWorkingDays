@@ -11,8 +11,11 @@ export interface ISharePointService {
   getListItems(listName: string, select?: string[], expand?: string[], filter?: string, top?: number, orderBy?: string, ascending?: boolean): Promise<any[]>;
   getListItemsFromSite(siteUrl: string, listName: string, select?: string[], expand?: string[], filter?: string, top?: number, orderBy?: string, ascending?: boolean): Promise<any[]>;
   getListItemById(listName: string, itemId: number, select?: string[], expand?: string[]): Promise<any>;
+  getListItemByIdFromSite(siteUrl: string, listName: string, itemId: number, select?: string[], expand?: string[]): Promise<any>;
   createListItem(listName: string, item: any): Promise<any>;
+  createListItemInSite(siteUrl: string, listName: string, item: any): Promise<any>;
   updateListItem(listName: string, itemId: number, item: any): Promise<any>;
+  updateListItemInSite(siteUrl: string, listName: string, itemId: number, item: any): Promise<any>;
   deleteListItem(listName: string, itemId: number): Promise<void>;
   getListItemsByCAML(listName: string, camlQuery: string): Promise<any[]>;
   getItemVersionHistory(listName: string, itemId: number): Promise<any[]>;
@@ -431,6 +434,68 @@ export class SharePointService implements ISharePointService {
       return result;
     } catch (error) {
       console.error(`Error creating item in list ${listName} at site ${siteUrl}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update an existing item in a SharePoint list at a different site (e.g., root site)
+   * @param siteUrl - The absolute URL of the site where the list exists
+   * @param listName - Name of the SharePoint list
+   * @param itemId - ID of the item to update
+   * @param item - Object containing the updated data
+   * @returns Promise with the updated item
+   */
+  public async updateListItemInSite(siteUrl: string, listName: string, itemId: number, item: any): Promise<any> {
+    try {
+      // Create a new SPFI instance targeting the specific site URL
+      const targetSp = spfi(siteUrl).using(SPFx(this.context));
+      
+      // Debug: log payload being sent to update
+      // eslint-disable-next-line no-console
+      console.debug('[SharePointService] updateListItemInSite payload:', { siteUrl, listName, itemId, item });
+      
+      await targetSp.web.lists.getByTitle(listName).items.getById(itemId).update(item);
+      return await this.getListItemByIdFromSite(siteUrl, listName, itemId);
+    } catch (error) {
+      console.error(`Error updating item ${itemId} in list ${listName} at site ${siteUrl}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get a single item by ID from a SharePoint list at a different site
+   * @param siteUrl - The absolute URL of the site where the list exists
+   * @param listName - Name of the SharePoint list
+   * @param itemId - ID of the item to retrieve
+   * @param select - Array of fields to select
+   * @param expand - Array of fields to expand
+   * @returns Promise with the item data
+   */
+  public async getListItemByIdFromSite(
+    siteUrl: string,
+    listName: string,
+    itemId: number,
+    select?: string[],
+    expand?: string[]
+  ): Promise<any> {
+    try {
+      // Create a new SPFI instance targeting the specific site URL
+      const targetSp = spfi(siteUrl).using(SPFx(this.context));
+      let query = targetSp.web.lists.getByTitle(listName).items.getById(itemId);
+
+      if (select && select.length > 0) {
+        query = query.select(...select);
+      }
+
+      if (expand && expand.length > 0) {
+        query = query.expand(...expand);
+      }
+
+      const item = await query();
+      return item;
+    } catch (error) {
+      console.error(`Error getting item ${itemId} from list ${listName} at site ${siteUrl}:`, error);
       throw error;
     }
   }

@@ -149,6 +149,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
       name: 'Actions', 
       fieldName: 'actions', 
       minWidth: 80, 
+      maxWidth: 80,
       onRender: (item: any) => (
         canEdit ? (
           <IconButton 
@@ -160,9 +161,9 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
         ) : null
       ) 
     },
-    { key: 'colYear', name: 'Year', fieldName: 'year', minWidth: 100 },
-    { key: 'colMonth', name: 'Month', fieldName: 'month', minWidth: 120 },
-    { key: 'colWorkingDays', name: 'Working Days', fieldName: 'totalDays', minWidth: 120, onRender: (item: IWorkingDaysRecord) => formatNumber(item.totalDays) }
+    { key: 'colYear', name: 'Year', fieldName: 'year', minWidth: 100, maxWidth: 100 },
+    { key: 'colMonth', name: 'Month', fieldName: 'month', minWidth: 120, maxWidth: 120 },
+    { key: 'colWorkingDays', name: 'Working Days', fieldName: 'totalDays', minWidth: 140, maxWidth: 140, onRender: (item: IWorkingDaysRecord) => formatNumber(item.totalDays) }
   ], [formatNumber, openEdit, canEdit, rawItems]);
 
   const tabs = React.useMemo(() => [
@@ -221,7 +222,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
                   items={records}
                   columns={columns}
                   setKey="workingDays"
-                  layoutMode={DetailsListLayoutMode.justified}
+                  layoutMode={DetailsListLayoutMode.fixedColumns}
                   selectionMode={SelectionMode.none}
                 />
               ) : (

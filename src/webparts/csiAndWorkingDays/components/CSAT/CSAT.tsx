@@ -116,6 +116,7 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
       name: 'Actions', 
       fieldName: 'actions', 
       minWidth: 80, 
+      maxWidth: 80,
       onRender: (item: any) => (
         canEdit ? (
           <IconButton 
@@ -127,12 +128,12 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
         ) : null
       ) 
     },
-    { key: 'colCSATValue', name: 'CSAT Value', fieldName: 'csatValue', minWidth: 120 },
-    { key: 'colDate', name: 'Date', fieldName: 'csatAquiredDate', minWidth: 100, onRender: (item: ICSATRecord) => formatDate(item.csatAquiredDate) },
-    { key: 'colGoal', name: 'Goal', fieldName: 'goal', minWidth: 100 },
-    { key: 'colUSL', name: 'USL', fieldName: 'usl', minWidth: 70 },
-    { key: 'colLSL', name: 'LSL', fieldName: 'lsl', minWidth: 70 },
-    { key: 'colRemarks', name: 'Remarks', fieldName: 'remarks', minWidth: 200 }
+    { key: 'colCSATValue', name: 'CSAT Value', fieldName: 'csatValue', minWidth: 120, maxWidth: 120 },
+    { key: 'colDate', name: 'Date', fieldName: 'csatAquiredDate', minWidth: 120, maxWidth: 120, onRender: (item: ICSATRecord) => formatDate(item.csatAquiredDate) },
+    { key: 'colGoal', name: 'Goal', fieldName: 'goal', minWidth: 100, maxWidth: 100 },
+    { key: 'colUSL', name: 'USL', fieldName: 'usl', minWidth: 80, maxWidth: 80 },
+    { key: 'colLSL', name: 'LSL', fieldName: 'lsl', minWidth: 80, maxWidth: 80 },
+    { key: 'colRemarks', name: 'Remarks', fieldName: 'remarks', minWidth: 250, maxWidth: 250 }
   ], [formatDate, openEdit, canEdit, rawItems]);
 
   const tabs = React.useMemo(() => [
@@ -191,7 +192,7 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
                   items={records}
                   columns={columns}
                   setKey="csat"
-                  layoutMode={DetailsListLayoutMode.justified}
+                  layoutMode={DetailsListLayoutMode.fixedColumns}
                   selectionMode={SelectionMode.none}
                 />
               ) : (
