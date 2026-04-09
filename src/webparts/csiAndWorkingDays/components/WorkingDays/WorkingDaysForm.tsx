@@ -32,6 +32,19 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
     { key: 'December', text: 'December' }
   ], []);
 
+  const yearOptions: IDropdownOption[] = React.useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025;
+    const endYear = currentYear + 10;
+    const years: IDropdownOption[] = [];
+    
+    for (let year = startYear; year <= endYear; year++) {
+      years.push({ key: year, text: year.toString() });
+    }
+    
+    return years;
+  }, []);
+
   const handleSave = async () => {
     setLoading(true);
     setError(null);
@@ -76,14 +89,14 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
           styles={{ dropdown: { width: '100%' } }}
         />
         
-        <TextField
+        <Dropdown
           label="Year"
-          type="number"
-          placeholder="Enter year (e.g., 2026)"
-          value={form.Year !== undefined && form.Year !== null ? String(form.Year) : ''}
-          onChange={(_, v) => updateField('Year', v === '' ? undefined : Number(v))}
+          placeholder="Select a year"
+          options={yearOptions}
+          selectedKey={form.Year}
+          onChange={(_, option) => updateField('Year', option?.key as number)}
           required
-          styles={{ root: { width: '100%' } }}
+          styles={{ dropdown: { width: '100%' } }}
         />
         
         <TextField
