@@ -6,6 +6,7 @@ interface IWorkingDaysCreatePayload {
   Title?: string; // Month field - internal name is Title in SharePoint
   Year?: number;
   Days?: number; // Total working days
+  ResourceAllocation?: number;
 }
 
 export class WorkingDaysService {
@@ -21,6 +22,7 @@ export class WorkingDaysService {
       'Title', //internal column name of Month field
       'Year',
       'Days',
+      'ResourceAllocation',
       'Modified'
     ];
 

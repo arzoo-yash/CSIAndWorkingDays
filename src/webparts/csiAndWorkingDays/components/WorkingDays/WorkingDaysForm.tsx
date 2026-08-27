@@ -9,7 +9,8 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
   const [form, setForm] = React.useState<IWorkingDaysFormData>(() => ({
     Title: item?.Title ?? item?.Month ?? undefined,
     Year: item?.Year ?? undefined,
-    Days: item?.Days ?? undefined
+    Days: item?.Days ?? undefined,
+    ResourceAllocation: item?.ResourceAllocation ?? undefined
   }));
 
   const [loading, setLoading] = React.useState(false);
@@ -110,6 +111,17 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
           max={31}
           styles={{ root: { width: '100%' } }}
         />
+        
+        <TextField
+          label="Resource Allocation"
+          type="number"
+          placeholder="Enter resource allocation"
+          value={form.ResourceAllocation !== undefined && form.ResourceAllocation !== null ? String(form.ResourceAllocation) : ''}
+          onChange={(_, v) => updateField('ResourceAllocation', (v === '' || v === undefined) ? undefined : parseFloat(v))}
+          required
+          step={0.1}
+          styles={{ root: { width: '100%' } }}
+        />
 
         <Stack 
           horizontal 
@@ -125,7 +137,7 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
           <PrimaryButton 
             onClick={handleSave} 
             text={isEdit ? 'Update' : 'Save'} 
-            disabled={loading || !form.Title || !form.Year || !form.Days}
+            disabled={loading || !form.Title || !form.Year || !form.Days || form.ResourceAllocation === undefined || form.ResourceAllocation === null}
             styles={{ root: { minWidth: '100px' } }}
           />
         </Stack>

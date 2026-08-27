@@ -69,6 +69,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
       year: year,
       periodLabel: labelParts.length > 0 ? labelParts.join(' ') : month ?? 'Not specified',
       totalDays: pickNumber(item, ['Days', 'TotalWorkingDays', 'WorkingDays', 'TotalDays']),
+      resourceAllocation: pickNumber(item, ['ResourceAllocation']),
       billableDays: pickNumber(item, ['BillableDays', 'Billable']),
       leaves: pickNumber(item, ['Leaves', 'PlannedLeaves', 'ApprovedLeaves']),
       holidays: pickNumber(item, ['Holidays', 'NonWorkingDays']),
@@ -163,7 +164,8 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
     },
     { key: 'colYear', name: 'Year', fieldName: 'year', minWidth: 100, maxWidth: 100 },
     { key: 'colMonth', name: 'Month', fieldName: 'month', minWidth: 120, maxWidth: 120 },
-    { key: 'colWorkingDays', name: 'Working Days', fieldName: 'totalDays', minWidth: 140, maxWidth: 140, onRender: (item: IWorkingDaysRecord) => formatNumber(item.totalDays) }
+    { key: 'colWorkingDays', name: 'Working Days', fieldName: 'totalDays', minWidth: 140, maxWidth: 140, onRender: (item: IWorkingDaysRecord) => formatNumber(item.totalDays) },
+    { key: 'colResourceAllocation', name: 'Resource Allocation', fieldName: 'resourceAllocation', minWidth: 160, maxWidth: 160, onRender: (item: IWorkingDaysRecord) => formatNumber(item.resourceAllocation, 2) }
   ], [formatNumber, openEdit, canEdit, rawItems]);
 
   const tabs = React.useMemo(() => [
