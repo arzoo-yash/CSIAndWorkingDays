@@ -113,9 +113,9 @@ const WorkingDaysForm: React.FC<IWorkingDaysFormProps> = ({ context, item, isEdi
         />
         
         <TextField
-          label="Resource Allocation"
+          label="Allocated Resources"
           type="number"
-          placeholder="Enter resource allocation"
+          placeholder="Enter allocated resources"
           value={form.ResourceAllocation !== undefined && form.ResourceAllocation !== null ? String(form.ResourceAllocation) : ''}
           onChange={(_, v) => updateField('ResourceAllocation', (v === '' || v === undefined) ? undefined : parseFloat(v))}
           required
