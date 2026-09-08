@@ -6,7 +6,14 @@ import WorkingDays from './WorkingDays/WorkingDays';
 import type { DashboardTabKey } from './types';
 
 const CsiAndWorkingDays: React.FC<ICsiAndWorkingDaysProps> = ({ context }) => {
-  const [activeTab, setActiveTab] = React.useState<DashboardTabKey>('csat');
+  const [activeTab, setActiveTab] = React.useState<DashboardTabKey>(() => {
+    try {
+      const menuSelected = window.localStorage.getItem('menuSelected');
+      return menuSelected === 'workingDays' ? 'workingDays' : 'csat';
+    } catch {
+      return 'csat';
+    }
+  });
 
   return (
     <div className={styles.csiAndWorkingDays}>
