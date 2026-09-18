@@ -10,7 +10,8 @@ import {
   Dialog,
   DialogType,
   IconButton,
-  PrimaryButton
+  PrimaryButton,
+  DefaultButton
 } from '@fluentui/react';
 import styles from './CSAT.module.scss';
 import headerStyles from '../Header/Header.module.scss';
@@ -21,6 +22,8 @@ import Header from '../Header';
 import type { DashboardTabKey } from '../types';
 import NewEditCSAT from './CSATForm';
 
+const PAGE_SIZE = 8;
+
 const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
   const [records, setRecords] = React.useState<ICSATRecord[]>([]);
   const [rawItems, setRawItems] = React.useState<any[]>([]);
@@ -29,6 +32,9 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
   const [isPanelOpen, setIsPanelOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<any | undefined>(undefined);
   const [canEdit, setCanEdit] = React.useState<boolean>(false);
+  const [isDateSorted, setIsDateSorted] = React.useState<boolean>(false);
+  const [isDateSortedDescending, setIsDateSortedDescending] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const service = React.useMemo(() => new CSATService(context), [context]);
   const ppoService = React.useMemo(() => new PPOApproverService(context), [context]);
@@ -62,6 +68,38 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
   React.useEffect(() => {
     void loadData();
   }, [loadData]);
+
+  const sortedRecords = React.useMemo(() => {
+    if (!isDateSorted) {
+      return records;
+    }
+    return [...records].sort((a, b) => {
+      const aTime = a.csatAquiredDate ? a.csatAquiredDate.getTime() : 0;
+      const bTime = b.csatAquiredDate ? b.csatAquiredDate.getTime() : 0;
+      const compareResult = aTime - bTime;
+      return isDateSortedDescending ? -compareResult : compareResult;
+    });
+  }, [records, isDateSorted, isDateSortedDescending]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedRecords.length / PAGE_SIZE));
+
+  const pagedRecords = React.useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return sortedRecords.slice(start, start + PAGE_SIZE);
+  }, [sortedRecords, currentPage]);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [records, isDateSorted, isDateSortedDescending]);
+
+  React.useEffect(() => {
+    setCurrentPage(prev => Math.min(prev, totalPages));
+  }, [totalPages]);
+
+  const onDateColumnClick = React.useCallback(() => {
+    setIsDateSortedDescending(isDateSorted ? !isDateSortedDescending : false);
+    setIsDateSorted(true);
+  }, [isDateSorted, isDateSortedDescending]);
 
   React.useEffect(() => {
     const checkPermissions = async (): Promise<void> => {
@@ -129,12 +167,22 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
       ) 
     },
     { key: 'colCSATValue', name: 'CSAT Value', fieldName: 'csatValue', minWidth: 120, maxWidth: 120 },
-    { key: 'colDate', name: 'Date', fieldName: 'csatAquiredDate', minWidth: 120, maxWidth: 120, onRender: (item: ICSATRecord) => formatDate(item.csatAquiredDate) },
+    {
+      key: 'colDate',
+      name: 'Date',
+      fieldName: 'csatAquiredDate',
+      minWidth: 120,
+      maxWidth: 120,
+      isSorted: isDateSorted,
+      isSortedDescending: isDateSortedDescending,
+      onColumnClick: onDateColumnClick,
+      onRender: (item: ICSATRecord) => formatDate(item.csatAquiredDate)
+    },
     { key: 'colGoal', name: 'Goal', fieldName: 'goal', minWidth: 100, maxWidth: 100 },
     { key: 'colUSL', name: 'USL', fieldName: 'usl', minWidth: 80, maxWidth: 80 },
     { key: 'colLSL', name: 'LSL', fieldName: 'lsl', minWidth: 80, maxWidth: 80 },
     { key: 'colRemarks', name: 'Remarks', fieldName: 'remarks', minWidth: 250, maxWidth: 250 }
-  ], [formatDate, openEdit, canEdit, rawItems]);
+  ], [formatDate, openEdit, canEdit, rawItems, isDateSorted, isDateSortedDescending, onDateColumnClick]);
 
   const tabs = React.useMemo(() => [
     { key: 'csat', label: 'Customer Satisfaction' }, 
@@ -187,9 +235,9 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
         ) : (
           <>
             <div className={styles.tableWrapper}>
-              {records.length > 0 ? (
+              {sortedRecords.length > 0 ? (
                 <DetailsList
-                  items={records}
+                  items={pagedRecords}
                   columns={columns}
                   setKey="csat"
                   layoutMode={DetailsListLayoutMode.fixedColumns}
@@ -199,6 +247,24 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
                 <div className={styles.emptyState}>No CSAT entries available.</div>
               )}
             </div>
+
+            {sortedRecords.length > 0 && (
+              <div className={styles.paginationBar}>
+                <span className={styles.paginationInfo}>Page {currentPage} of {totalPages}</span>
+                <div className={styles.paginationButtons}>
+                  <DefaultButton
+                    text="Previous"
+                    disabled={currentPage <= 1}
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  />
+                  <PrimaryButton
+                    text="Next"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  />
+                </div>
+              </div>
+            )}
           </>
         )}
 

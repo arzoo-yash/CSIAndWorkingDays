@@ -10,7 +10,8 @@ import {
   Dialog,
   DialogType,
   IconButton,
-  PrimaryButton
+  PrimaryButton,
+  DefaultButton
 } from '@fluentui/react';
 import styles from './WorkingDays.module.scss';
 import headerStyles from '../Header/Header.module.scss';
@@ -21,6 +22,14 @@ import Header from '../Header';
 import type { DashboardTabKey } from '../types';
 import WorkingDaysForm from './WorkingDaysForm';
 
+const PAGE_SIZE = 8;
+const MONTH_ORDER: Record<string, number> = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12
+};
+
+type SortableColumnKey = 'year' | 'month';
+
 const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
   const [records, setRecords] = React.useState<IWorkingDaysRecord[]>([]);
   const [rawItems, setRawItems] = React.useState<any[]>([]);
@@ -29,6 +38,9 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
   const [isPanelOpen, setIsPanelOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<any | undefined>(undefined);
   const [canEdit, setCanEdit] = React.useState<boolean>(false);
+  const [sortColumnKey, setSortColumnKey] = React.useState<SortableColumnKey | undefined>(undefined);
+  const [isSortedDescending, setIsSortedDescending] = React.useState<boolean>(false);
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
 
   const service = React.useMemo(() => new WorkingDaysService(context), [context]);
   const ppoService = React.useMemo(() => new PPOApproverService(context), [context]);
@@ -97,6 +109,43 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
     void loadData();
   }, [loadData]);
 
+  const sortedRecords = React.useMemo(() => {
+    if (!sortColumnKey) {
+      return records;
+    }
+    return [...records].sort((a, b) => {
+      let compareResult = 0;
+      if (sortColumnKey === 'year') {
+        compareResult = (a.year ?? 0) - (b.year ?? 0);
+      } else {
+        const aOrder = MONTH_ORDER[(a.month ?? '').toLowerCase()] ?? 0;
+        const bOrder = MONTH_ORDER[(b.month ?? '').toLowerCase()] ?? 0;
+        compareResult = aOrder - bOrder;
+      }
+      return isSortedDescending ? -compareResult : compareResult;
+    });
+  }, [records, sortColumnKey, isSortedDescending]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedRecords.length / PAGE_SIZE));
+
+  const pagedRecords = React.useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return sortedRecords.slice(start, start + PAGE_SIZE);
+  }, [sortedRecords, currentPage]);
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [records, sortColumnKey, isSortedDescending]);
+
+  React.useEffect(() => {
+    setCurrentPage(prev => Math.min(prev, totalPages));
+  }, [totalPages]);
+
+  const onColumnHeaderClick = React.useCallback((key: SortableColumnKey) => {
+    setIsSortedDescending(sortColumnKey === key ? !isSortedDescending : false);
+    setSortColumnKey(key);
+  }, [sortColumnKey, isSortedDescending]);
+
   React.useEffect(() => {
     const checkPermissions = async (): Promise<void> => {
       try {
@@ -162,11 +211,29 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
         ) : null
       ) 
     },
-    { key: 'colYear', name: 'Year', fieldName: 'year', minWidth: 100, maxWidth: 100 },
-    { key: 'colMonth', name: 'Month', fieldName: 'month', minWidth: 120, maxWidth: 120 },
+    {
+      key: 'colYear',
+      name: 'Year',
+      fieldName: 'year',
+      minWidth: 100,
+      maxWidth: 100,
+      isSorted: sortColumnKey === 'year',
+      isSortedDescending: sortColumnKey === 'year' && isSortedDescending,
+      onColumnClick: () => onColumnHeaderClick('year')
+    },
+    {
+      key: 'colMonth',
+      name: 'Month',
+      fieldName: 'month',
+      minWidth: 120,
+      maxWidth: 120,
+      isSorted: sortColumnKey === 'month',
+      isSortedDescending: sortColumnKey === 'month' && isSortedDescending,
+      onColumnClick: () => onColumnHeaderClick('month')
+    },
     { key: 'colWorkingDays', name: 'Working Days', fieldName: 'totalDays', minWidth: 140, maxWidth: 140, onRender: (item: IWorkingDaysRecord) => formatNumber(item.totalDays) },
     { key: 'colResourceAllocation', name: 'Allocated Resources', fieldName: 'resourceAllocation', minWidth: 160, maxWidth: 160, onRender: (item: IWorkingDaysRecord) => formatNumber(item.resourceAllocation, 2) }
-  ], [formatNumber, openEdit, canEdit, rawItems]);
+  ], [formatNumber, openEdit, canEdit, rawItems, sortColumnKey, isSortedDescending, onColumnHeaderClick]);
 
   const tabs = React.useMemo(() => [
     { key: 'csat', label: 'Customer Satisfaction' }, 
@@ -219,9 +286,9 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
         ) : (
           <>
             <div className={styles.tableWrapper}>
-              {records.length > 0 ? (
+              {sortedRecords.length > 0 ? (
                 <DetailsList
-                  items={records}
+                  items={pagedRecords}
                   columns={columns}
                   setKey="workingDays"
                   layoutMode={DetailsListLayoutMode.fixedColumns}
@@ -231,6 +298,24 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
                 <div className={styles.emptyState}>No working days entries available.</div>
               )}
             </div>
+
+            {sortedRecords.length > 0 && (
+              <div className={styles.paginationBar}>
+                <span className={styles.paginationInfo}>Page {currentPage} of {totalPages}</span>
+                <div className={styles.paginationButtons}>
+                  <DefaultButton
+                    text="Previous"
+                    disabled={currentPage <= 1}
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  />
+                  <PrimaryButton
+                    text="Next"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  />
+                </div>
+              </div>
+            )}
           </>
         )}
 
