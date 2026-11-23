@@ -174,11 +174,15 @@ export class CSATService {
       'USL',
       'LSL',
       'Remarks',
-      'Modified'
+      'Modified',
+      'Attachments',
+      'AttachmentFiles/FileName',
+      'AttachmentFiles/ServerRelativeUrl'
     ];
+    const expand = ['AttachmentFiles'];
 
     // Return items ordered by Modified desc (SharePointService defaults to Modified desc)
-    const items = await this.spService.getListItems(LIST_NAMES.Customer_Satisfaction_Index, select, undefined, undefined, 500, 'Modified', false);
+    const items = await this.spService.getListItems(LIST_NAMES.Customer_Satisfaction_Index, select, expand, undefined, 500, 'Modified', false);
     return items || [];
   }
 
@@ -192,9 +196,12 @@ export class CSATService {
       'LSL',
       'Remarks',
       'Modified',
-      'Created'
+      'Created',
+      'Attachments',
+      'AttachmentFiles/FileName',
+      'AttachmentFiles/ServerRelativeUrl'
     ];
-    return await this.spService.getListItemById(LIST_NAMES.Customer_Satisfaction_Index, id, select);
+    return await this.spService.getListItemById(LIST_NAMES.Customer_Satisfaction_Index, id, select, ['AttachmentFiles']);
   }
 
   public async create(payload: ICSATCreatePayload): Promise<any> {
@@ -220,6 +227,18 @@ export class CSATService {
     void this.syncToRootSite(payload, id);
     
     return result;
+  }
+
+  public async getAttachments(itemId: number): Promise<any[]> {
+    return await this.spService.getAttachments(LIST_NAMES.Customer_Satisfaction_Index, itemId);
+  }
+
+  public async addAttachment(itemId: number, fileName: string, content: string | Blob | ArrayBuffer): Promise<any> {
+    return await this.spService.addAttachment(LIST_NAMES.Customer_Satisfaction_Index, itemId, fileName, content);
+  }
+
+  public async deleteAttachment(itemId: number, fileName: string): Promise<void> {
+    return await this.spService.deleteAttachment(LIST_NAMES.Customer_Satisfaction_Index, itemId, fileName);
   }
 }
 

@@ -47,7 +47,10 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
     goal: item?.Goal,
     usl: item?.USL,
     lsl: item?.LSL,
-    modified: item?.Modified ? new Date(item.Modified) : undefined
+    modified: item?.Modified ? new Date(item.Modified) : undefined,
+    attachments: Array.isArray(item?.AttachmentFiles)
+      ? item.AttachmentFiles.map((f: any) => ({ fileName: f.FileName, serverRelativeUrl: f.ServerRelativeUrl }))
+      : []
   })), []);
 
   const loadData = React.useCallback(async () => {
@@ -166,7 +169,7 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
         ) : null
       ) 
     },
-    { key: 'colCSATValue', name: 'CSAT Value', fieldName: 'csatValue', minWidth: 120, maxWidth: 120 },
+    { key: 'colCSATValue', name: 'CSI', fieldName: 'csatValue', minWidth: 120, maxWidth: 120 },
     {
       key: 'colDate',
       name: 'Date',
@@ -181,12 +184,39 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
     { key: 'colGoal', name: 'Goal', fieldName: 'goal', minWidth: 100, maxWidth: 100 },
     { key: 'colUSL', name: 'USL', fieldName: 'usl', minWidth: 80, maxWidth: 80 },
     { key: 'colLSL', name: 'LSL', fieldName: 'lsl', minWidth: 80, maxWidth: 80 },
-    { key: 'colRemarks', name: 'Remarks', fieldName: 'remarks', minWidth: 250, maxWidth: 250 }
+    { key: 'colRemarks', name: 'Remarks', fieldName: 'remarks', minWidth: 250, maxWidth: 250 },
+    {
+      key: 'colAttachment',
+      name: 'Attachment',
+      fieldName: 'attachments',
+      minWidth: 150,
+      maxWidth: 200,
+      onRender: (item: ICSATRecord) => (
+        item.attachments && item.attachments.length > 0 ? (
+          <div className={styles.attachmentCell}>
+            {item.attachments.map(att => (
+              <a
+                key={att.fileName}
+                href={att.serverRelativeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={att.fileName}
+                className={styles.attachmentLink}
+              >
+                {att.fileName}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <span>—</span>
+        )
+      )
+    }
   ], [formatDate, openEdit, canEdit, rawItems, isDateSorted, isDateSortedDescending, onDateColumnClick]);
 
   const tabs = React.useMemo(() => [
     { key: 'csat', label: 'Customer Satisfaction' }, 
-    { key: 'workingDays', label: 'No.Working Days' }
+    { key: 'workingDays', label: 'Working Days' }
   ], []);
 
   return (

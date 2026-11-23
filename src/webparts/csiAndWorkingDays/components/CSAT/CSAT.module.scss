@@ -245,6 +245,23 @@
   font-style: italic;
 }
 
+.attachmentCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.attachmentLink {
+  color: #1a237e;
+  text-decoration: underline;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.attachmentLink:hover {
+  color: #0b2a64;
+}
+
 .paginationBar {
   display: flex;
   justify-content: space-between;

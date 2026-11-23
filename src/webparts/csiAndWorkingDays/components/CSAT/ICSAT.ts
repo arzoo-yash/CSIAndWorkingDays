@@ -1,6 +1,11 @@
 import type { WebPartContext } from '@microsoft/sp-webpart-base';
 import type { DashboardTabKey } from '../types';
 
+export interface ICSATAttachment {
+  fileName: string;
+  serverRelativeUrl: string;
+}
+
 export interface ICSATRecord {
   id: number;
   csatValue?: string; // Title field
@@ -10,6 +15,7 @@ export interface ICSATRecord {
   usl?: number;
   lsl?: number;
   modified?: Date;
+  attachments?: ICSATAttachment[];
 }
 
 export interface ICSATProps {

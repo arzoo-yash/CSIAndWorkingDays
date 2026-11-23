@@ -6,6 +6,8 @@ import '@pnp/sp/items';
 import '@pnp/sp/site-users/web';
 import '@pnp/sp/batching';
 import '@pnp/sp/fields';
+import '@pnp/sp/attachments';
+import type { IAttachmentInfo } from '@pnp/sp/attachments';
 
 export interface ISharePointService {
   getListItems(listName: string, select?: string[], expand?: string[], filter?: string, top?: number, orderBy?: string, ascending?: boolean): Promise<any[]>;
@@ -24,6 +26,9 @@ export interface ISharePointService {
   updatePeopleFieldByIds(listName: string, itemId: number, fieldInternalName: string, userIds: number[]): Promise<any>;
   createListItemWithPeople(listName: string, item: any, fieldInternalName: string, userIds: number[]): Promise<any>;
   createListItemWithPeopleRaw(listName: string, item: any, fieldInternalName: string, userIds: number[]): Promise<any>;
+  getAttachments(listName: string, itemId: number): Promise<IAttachmentInfo[]>;
+  addAttachment(listName: string, itemId: number, fileName: string, content: string | Blob | ArrayBuffer): Promise<any>;
+  deleteAttachment(listName: string, itemId: number, fileName: string): Promise<void>;
 }
 
 export class SharePointService implements ISharePointService {
@@ -531,6 +536,54 @@ export class SharePointService implements ISharePointService {
       await this.sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
     } catch (error) {
       console.error(`Error deleting item ${itemId} from list ${listName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get the attachments for a list item
+   * @param listName - Name of the SharePoint list
+   * @param itemId - ID of the item
+   * @returns Promise with array of attachment info (FileName, ServerRelativeUrl, etc.)
+   */
+  public async getAttachments(listName: string, itemId: number): Promise<IAttachmentInfo[]> {
+    try {
+      return await this.sp.web.lists.getByTitle(listName).items.getById(itemId).attachmentFiles();
+    } catch (error) {
+      console.error(`Error getting attachments for item ${itemId} in list ${listName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add an attachment to a list item
+   * @param listName - Name of the SharePoint list
+   * @param itemId - ID of the item
+   * @param fileName - Name of the file, including extension
+   * @param content - File content as a string, Blob, or ArrayBuffer
+   * @returns Promise with the added attachment info
+   */
+  public async addAttachment(listName: string, itemId: number, fileName: string, content: string | Blob | ArrayBuffer): Promise<any> {
+    try {
+      return await this.sp.web.lists.getByTitle(listName).items.getById(itemId).attachmentFiles.add(fileName, content);
+    } catch (error) {
+      console.error(`Error adding attachment "${fileName}" to item ${itemId} in list ${listName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete an attachment from a list item
+   * @param listName - Name of the SharePoint list
+   * @param itemId - ID of the item
+   * @param fileName - Name of the attachment file to delete
+   * @returns Promise
+   */
+  public async deleteAttachment(listName: string, itemId: number, fileName: string): Promise<void> {
+    try {
+      await this.sp.web.lists.getByTitle(listName).items.getById(itemId).attachmentFiles.getByName(fileName).delete();
+    } catch (error) {
+      console.error(`Error deleting attachment "${fileName}" from item ${itemId} in list ${listName}:`, error);
       throw error;
     }
   }

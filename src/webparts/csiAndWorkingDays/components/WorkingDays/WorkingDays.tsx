@@ -237,7 +237,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
 
   const tabs = React.useMemo(() => [
     { key: 'csat', label: 'Customer Satisfaction' }, 
-    { key: 'workingDays', label: 'No.Working Days' }
+    { key: 'workingDays', label: 'Working Days' }
   ], []);
 
   return (
@@ -324,7 +324,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
           onDismiss={closePanel}
           dialogContentProps={{
             type: DialogType.normal,
-            title: editingItem ? 'Edit Working Days' : 'New Working Days Entry'
+            title: editingItem ? 'Edit Working Days' : 'Working Days'
           }}
           minWidth={500}
           maxWidth={600}
