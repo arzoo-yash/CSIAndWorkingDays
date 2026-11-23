@@ -245,6 +245,24 @@
   font-style: italic;
 }
 
+.paginationBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px 0;
+}
+
+.paginationInfo {
+  font-size: 13px;
+  color: #5f6b7c;
+}
+
+.paginationButtons {
+  display: flex;
+  gap: 8px;
+}
+
 @media (max-width: 768px) {
   .tabShell {
     padding: 16px;
