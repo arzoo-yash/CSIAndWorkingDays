@@ -144,7 +144,7 @@ const CSAT: React.FC<ICSATProps> = ({ context, onSelectTab }) => {
   return (
     <section className={styles.tabShell} aria-labelledby="csat-heading">
       <Header
-        title="Admin Lists"
+        title="CSAT & Working Days"
         iconName="Bullseye"
       />
 

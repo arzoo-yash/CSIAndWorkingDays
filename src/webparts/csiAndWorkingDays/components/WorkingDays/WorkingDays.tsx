@@ -176,7 +176,7 @@ const WorkingDays: React.FC<IWorkingDaysProps> = ({ context, onSelectTab }) => {
   return (
     <section className={styles.tabShell} aria-labelledby="working-days-heading">
       <Header
-        title="Admin Lists"
+        title="CSAT & Working Days"
         iconName="Bullseye"
       />
 
